@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>✨ Misi Pilih Murid — Name Picker</title>
+<style>
+:root{
+  --navy:#071a3d;
+  --blue:#123f82;
+  --cyan:#39c6ff;
+  --gold:#ffd76a;
+  --pink:#ff5e9c;
+  --white:#f7fbff;
+  --glass:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0; min-height:100vh; overflow:hidden;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--white);
+  background:
+    radial-gradient(circle at 20% 15%,rgba(57,198,255,.25),transparent 28%),
+    radial-gradient(circle at 85% 80%,rgba(255,94,156,.20),transparent 30%),
+    linear-gradient(145deg,#030b20,#0b2450 55%,#06122e);
+}
+body:before{
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.35;
+  background-image:radial-gradient(#fff 1px,transparent 1px);
+  background-size:34px 34px;
+}
+.app{height:100vh;display:flex;flex-direction:column;padding:18px max(18px,env(safe-area-inset-left)) 16px;position:relative}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:48px;height:48px;border-radius:15px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#1b5bb5,#0a275b);font-size:25px;
+  box-shadow:0 8px 30px rgba(57,198,255,.25),inset 0 0 0 1px rgba(255,255,255,.15)
+}
+h1{font-size:clamp(19px,3vw,28px);margin:0;letter-spacing:.2px}
+.subtitle{font-size:12px;color:#b9c9e7;margin-top:2px}
+.sound{
+  border:1px solid rgba(255,255,255,.2);background:var(--glass);color:white;
+  border-radius:14px;padding:10px 13px;font-size:20px;cursor:pointer
+}
+.main{flex:1;display:grid;place-items:center;min-height:0}
+.card{
+  width:min(940px,100%); height:min(650px,calc(100vh - 105px));
+  border:1px solid rgba(255,255,255,.15);border-radius:30px;
+  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055));
+  box-shadow:0 30px 90px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.12);
+  backdrop-filter:blur(16px);padding:clamp(18px,4vw,38px);
+  display:grid;grid-template-columns:1fr 1.2fr;gap:28px;align-items:center;
+}
+.left{text-align:center}
+.mission{
+  display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;
+  background:rgba(57,198,255,.12);border:1px solid rgba(57,198,255,.3);
+  color:#9ee5ff;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1.2px
+}
+.wheel{
+  width:min(330px,58vw);aspect-ratio:1;margin:24px auto 18px;border-radius:50%;
+  position:relative;display:grid;place-items:center;
+  background:conic-gradient(#ff5e9c 0 30deg,#ffd76a 30deg 60deg,#39c6ff 60deg 90deg,#7b6cff 90deg 120deg,#41e7a8 120deg 150deg,#ff8a5b 150deg 180deg,#ff5e9c 180deg 210deg,#ffd76a 210deg 240deg,#39c6ff 240deg 270deg,#7b6cff 270deg 300deg,#41e7a8 300deg 330deg,#ff8a5b 330deg 360deg);
+  box-shadow:0 0 0 10px rgba(255,255,255,.08),0 0 55px rgba(57,198,255,.22);
+  transition:transform 2.7s cubic-bezier(.12,.72,.12,1)
+}
+.wheel:after{
+  content:"";position:absolute;inset:19%;border-radius:50%;
+  background:radial-gradient(circle,#183e78,#071936 70%);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)
+}
+.wheelCenter{z-index:2;text-align:center}
+.wheelCenter b{font-size:35px;display:block}
+.wheelCenter span{font-size:11px;color:#a9bfdf;letter-spacing:1px}
+.pointer{
+  position:absolute;z-index:5;top:-9px;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;
+  border-top:28px solid var(--gold);filter:drop-shadow(0 4px 5px rgba(0,0,0,.4))
+}
+.right{text-align:center}
+.kicker{color:#9bb4d8;font-size:13px;text-transform:uppercase;letter-spacing:2px}
+.name{
+  min-height:115px;display:grid;place-items:center;margin:12px 0;
+  font-size:clamp(38px,7vw,72px);font-weight:900;line-height:1.05;
+  background:linear-gradient(90deg,#fff,#aeeaff,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 35px rgba(57,198,255,.2)
+}
+.status{height:28px;color:#c2d2eb;font-size:14px}
+button.spin{
+  border:0;border-radius:18px;padding:17px 30px;min-width:min(320px,90%);
+  color:#061735;font-size:18px;font-weight:900;cursor:pointer;
+  background:linear-gradient(135deg,#ffd76a,#ff9f68);
+  box-shadow:0 10px 35px rgba(255,185,95,.28);transition:.18s transform
+}
+button.spin:active{transform:scale(.96)}
+button.spin:disabled{opacity:.6}
+.controls{display:flex;justify-content:center;gap:9px;margin-top:14px;flex-wrap:wrap}
+.small{
+  border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+  color:#dceaff;border-radius:12px;padding:9px 12px;font-size:12px
+}
+.counter{margin-top:18px;color:#a9bddc;font-size:13px}
+.counter b{color:#fff}
+.toast{
+ position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);
+ background:#071936;color:white;border:1px solid rgba(255,255,255,.15);
+ padding:12px 18px;border-radius:14px;opacity:0;transition:.3s;z-index:20
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.confetti{position:fixed;width:9px;height:16px;top:-30px;z-index:30;pointer-events:none;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translate3d(var(--x),105vh,0) rotate(720deg);opacity:.1}}
+@media(max-width:720px){
+ .app{padding-top:12px}
+ .card{height:calc(100vh - 86px);grid-template-columns:1fr;gap:0;overflow:auto;padding:16px}
+ .wheel{width:min(270px,62vw);margin:12px auto}
+ .name{min-height:90px;font-size:clamp(34px,10vw,52px)}
+ .right{padding-bottom:8px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">🎯</div>
+      <div><h1>MISI PILIH MURID</h1><div class="subtitle">Name Picker • Kelas 5 Astra</div></div>
+    </div>
+    <button class="sound" id="soundBtn" aria-label="Bunyi">🔊</button>
+  </div>
+
+  <div class="main">
+    <section class="card">
+      <div class="left">
+        <div class="mission">⚡ READY • 34 MURID</div>
+        <div class="wheel" id="wheel">
+          <div class="pointer"></div>
+          <div class="wheelCenter"><b>?</b><span>SIAPA<br>SETERUSNYA?</span></div>
+        </div>
+        <div class="counter">Sudah dipilih: <b id="picked">0</b> / 34</div>
+      </div>
+
+      <div class="right">
+        <div class="kicker">🎲 Pemilihan rawak</div>
+        <div class="name" id="name">SIAPA AKAN TERPILIH?</div>
+        <div class="status" id="status">Tekan butang untuk mulakan misi!</div>
+        <button class="spin" id="spin">🚀 PILIH MURID</button>
+        <div class="controls">
+          <button class="small" id="reset">↻ Reset</button>
+          <button class="small" id="reveal">✨ Reveal Cepat</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const students = Array.from({length:34},(_,i)=>`Murid ${String(i+1).padStart(2,'0')}`);
+let remaining=[...students], picked=0, spinning=false, soundOn=true, rotation=0;
+const wheel=document.getElementById('wheel'), nameEl=document.getElementById('name');
+const statusEl=document.getElementById('status'), spinBtn=document.getElementById('spin');
+const pickedEl=document.getElementById('picked'), toast=document.getElementById('toast');
+
+let audioCtx=null;
+function audio(){
+ if(!soundOn) return null;
+ audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+ if(audioCtx.state==='suspended') audioCtx.resume();
+ return audioCtx;
+}
+function tone(freq,dur=.08,type='sine',gain=.04,delay=0){
+ const c=audio(); if(!c)return;
+ const o=c.createOscillator(), g=c.createGain();
+ o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(0.0001,c.currentTime+delay);
+ g.gain.exponentialRampToValueAtTime(gain,c.currentTime+delay+.01);
+ g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+delay+dur);
+ o.connect(g);g.connect(c.destination);o.start(c.currentTime+delay);o.stop(c.currentTime+delay+dur+.02);
+}
+function clickSound(){tone(520,.05,'square',.025)}
+function winSound(){[523,659,784,1047].forEach((f,i)=>tone(f,.16,'sine',.045,i*.09))}
+function toastMsg(t){toast.textContent=t;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1700)}
+function confetti(){
+ for(let i=0;i<70;i++){
+   const x=(Math.random()*2-1)*100;
+   const el=document.createElement('i');el.className='confetti';
+   el.style.left=(Math.random()*100)+'vw';el.style.setProperty('--x',x+'vw');
+   el.style.background=['#ffd76a','#39c6ff','#ff5e9c','#7b6cff','#41e7a8'][i%5];
+   el.style.animationDelay=(Math.random()*.35)+'s';
+   document.body.appendChild(el);setTimeout(()=>el.remove(),2300);
+ }
+}
+function choose(){
+ if(!remaining.length){toastMsg('🎉 Semua 34 murid sudah dipilih!');return}
+ const idx=Math.floor(Math.random()*remaining.length);
+ return remaining.splice(idx,1)[0];
+}
+function spin(){
+ if(spinning)return;
+ audio();clickSound(); spinning=true;spinBtn.disabled=true;
+ statusEl.textContent='🔮 Sistem sedang memilih secara rawak...';
+ nameEl.textContent='???';
+ const turns=5+Math.random()*3;
+ rotation += turns*360 + Math.random()*360;
+ wheel.style.transform=`rotate(${rotation}deg)`;
+ let ticks=0;
+ const tick=setInterval(()=>{tone(260+ticks*25,.035,'square',.018);ticks++},110);
+ setTimeout(()=>{
+   clearInterval(tick);
+   const selected=choose();
+   if(selected){
+     nameEl.textContent=selected.toUpperCase();
+     picked++;pickedEl.textContent=picked;
+     statusEl.textContent='🎉 Misi berjaya! Sila ke hadapan.';
+     winSound();confetti();toastMsg('✨ '+selected+' terpilih!');
+   }
+   spinning=false;spinBtn.disabled=false;
+   if(!remaining.length) spinBtn.textContent='🏆 SEMUA SELESAI';
+ },2750);
+}
+function reset(){
+ remaining=[...students];picked=0;pickedEl.textContent='0';nameEl.textContent='SIAPA AKAN TERPILIH?';
+ statusEl.textContent='Senarai telah direset. Bersedia!';
+ spinBtn.textContent='🚀 PILIH MURID';clickSound();toastMsg('↻ Senarai direset');
+}
+spinBtn.addEventListener('click',spin);
+document.getElementById('reset').addEventListener('click',reset);
+document.getElementById('reveal').addEventListener('click',()=>{
+ if(spinning)return;
+ const s=choose(); if(!s)return;
+ nameEl.textContent=s.toUpperCase();picked++;pickedEl.textContent=picked;
+ statusEl.textContent='✨ Reveal pantas!';
+ winSound();confetti();toastMsg('🎯 '+s+' terpilih!');
+ if(!remaining.length)spinBtn.textContent='🏆 SEMUA SELESAI';
+});
+document.getElementById('soundBtn').addEventListener('click',()=>{
+ soundOn=!soundOn;document.getElementById('soundBtn').textContent=soundOn?'🔊':'🔇';
+ if(soundOn){audio();tone(660,.1,'sine',.04);toastMsg('🔊 Bunyi dihidupkan')}
+});
+document.addEventListener('pointerdown',()=>{if(soundOn)audio()},{once:true});
+</script>
+</body>
+</html>
